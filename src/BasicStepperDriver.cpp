@@ -13,6 +13,8 @@
  */
 #include "BasicStepperDriver.h"
 
+#include <algorithm>
+
 /*
  * Basic connection: only DIR, STEP are connected.
  * Microstepping controls should be hardwired.
@@ -138,7 +140,7 @@ void BasicStepperDriver::startMove(long steps, long time){
             float a2 = 1.0 / profile.accel + 1.0 / profile.decel;
             float sqrt_candidate = t*t - 2 * a2 * d;  // in √b^2-4ac
             if (sqrt_candidate >= 0){
-                speed = min(speed, (t - (float)sqrt(sqrt_candidate)) / a2);
+                speed = std::min(speed, (t - (float)sqrt(sqrt_candidate)) / a2);
             };
         }
         // how many microsteps from 0 to target speed
@@ -177,7 +179,7 @@ void BasicStepperDriver::alterMove(long steps){
         if (steps >= 0){
             steps_remaining += steps;
         } else {
-            steps_remaining = max(steps_to_brake, steps_remaining+steps);
+            steps_remaining = std::max(steps_to_brake, steps_remaining+steps);
         };
         break;
     case DECELERATING:
